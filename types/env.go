@@ -6,6 +6,8 @@ var (
 	RedirectUri  = "oob"
 	AccessToken  string
 	RefreshToken string
+	AuthBaseURL  = "https://openapi.baidu.com"
+	PanBaseURL   = "https://pan.baidu.com"
 )
 
 func getENV(key string) string {

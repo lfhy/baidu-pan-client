@@ -1,6 +1,9 @@
 package auth
 
-import "github.com/lfhy/baidu-pan-client/http"
+import (
+	"github.com/lfhy/baidu-pan-client/http"
+	"github.com/lfhy/baidu-pan-client/types"
+)
 
 type GetTokenReq struct {
 	ClientId     string `query:"client_id" default:"$CLIENT_ID"`
@@ -21,7 +24,7 @@ type GetTokenRes struct {
 
 func GetToken(req *GetTokenReq) (*GetTokenRes, error) {
 	api := http.API[*GetTokenReq, *GetTokenRes]{
-		BaseURL:    BaseURL,
+		BaseURL:    types.AuthBaseURL,
 		Route:      TokenRoute,
 		HTTPMethod: http.GET,
 		Request:    req,

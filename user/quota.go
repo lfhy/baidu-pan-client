@@ -19,7 +19,7 @@ type QuotaRes struct {
 
 func GetQuota(req *QuotaReq) (*QuotaRes, error) {
 	api := http.API[*QuotaReq, *QuotaRes]{
-		BaseURL:     BaseURL,
+		BaseURL:     types.PanBaseURL,
 		Route:       QuotaRoute,
 		AccessToken: types.AccessToken,
 		HTTPMethod:  http.GET,

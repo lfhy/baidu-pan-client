@@ -64,17 +64,68 @@ func TestSetEnv(t *testing.T) {
 	log.SetLogger(&TestLogger{})
 }
 
-// dereferencePointer 解引用指针获取实际值
-func dereferencePointer(v reflect.Value) interface{} {
-	// 如果是nil指针，直接返回nil
-	if v.IsNil() {
-		return nil
+// dereferenceValue 递归解引用值，处理指针、切片和结构体中的指针
+func dereferenceValue(v reflect.Value) interface{} {
+	switch v.Kind() {
+	case reflect.Ptr:
+		// 如果是nil指针，直接返回nil
+		if v.IsNil() {
+			return nil
+		}
+		// 解引用指针
+		return dereferenceValue(v.Elem())
+		
+	case reflect.Struct:
+		// 处理结构体，递归处理每个字段
+		result := make(map[string]interface{})
+		t := v.Type()
+		for i := 0; i < v.NumField(); i++ {
+			field := v.Field(i)
+			fieldType := t.Field(i)
+			// 获取字段名（考虑结构体标签）
+			fieldName := fieldType.Name
+			if tag := fieldType.Tag.Get("json"); tag != "" {
+				fieldName = tag
+			}
+			result[fieldName] = dereferenceValue(field)
+		}
+		return result
+		
+	case reflect.Slice:
+		// 处理切片
+		if v.Len() == 0 {
+			return v.Interface()
+		}
+		// 创建新的切片存储处理后的值
+		result := make([]interface{}, v.Len())
+		for i := 0; i < v.Len(); i++ {
+			result[i] = dereferenceValue(v.Index(i))
+		}
+		return result
+		
+	case reflect.Array:
+		// 处理数组
+		if v.Len() == 0 {
+			return v.Interface()
+		}
+		result := make([]interface{}, v.Len())
+		for i := 0; i < v.Len(); i++ {
+			result[i] = dereferenceValue(v.Index(i))
+		}
+		return result
+		
+	case reflect.Map:
+		// 处理映射
+		result := make(map[interface{}]interface{})
+		for _, key := range v.MapKeys() {
+			result[key.Interface()] = dereferenceValue(v.MapIndex(key))
+		}
+		return result
+		
+	default:
+		// 其他类型直接返回值
+		return v.Interface()
 	}
-	// 循环解引用直到得到非指针值
-	for v.Kind() == reflect.Ptr {
-		v = v.Elem()
-	}
-	return v.Interface()
 }
 
 // formatValue 格式化值用于打印
@@ -84,27 +135,7 @@ func formatValue(v interface{}) interface{} {
 	}
 
 	rv := reflect.ValueOf(v)
-	switch rv.Kind() {
-	case reflect.Ptr:
-		return dereferencePointer(rv)
-	case reflect.Slice:
-		// 处理切片类型
-		if rv.Len() == 0 {
-			return v
-		}
-		// 检查切片元素是否为指针
-		if rv.Type().Elem().Kind() == reflect.Ptr {
-			// 创建新的切片存储解引用后的值
-			result := make([]interface{}, rv.Len())
-			for i := 0; i < rv.Len(); i++ {
-				result[i] = dereferencePointer(rv.Index(i))
-			}
-			return result
-		}
-		return v
-	default:
-		return v
-	}
+	return dereferenceValue(rv)
 }
 
 func PrintRes(res any, err error) {

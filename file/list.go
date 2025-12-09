@@ -30,7 +30,7 @@ func List(req *ListReq) ([]*ListItem, error) {
 		HTTPMethod:  http.GET,
 		Method:      "list",
 		Request:     req,
-		Route:       ListRoute,
+		Route:       types.FileRoute,
 	}
 	res, err := api.Do()
 	if err != nil {

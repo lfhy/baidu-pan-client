@@ -47,7 +47,7 @@ func ListAll(req *ListAllReq) (*ListRes, error) {
 		HTTPMethod:  http.GET,
 		Method:      "listall",
 		Request:     req,
-		Route:       ListAllRoute,
+		Route:       types.MultimediaRoute,
 	}
 	return api.Do()
 }

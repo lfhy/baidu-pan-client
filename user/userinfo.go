@@ -24,7 +24,7 @@ func GetUserInfo(req *UserInfoReq) (*UserInfoRes, error) {
 		HTTPMethod:  http.GET,
 		Method:      "uinfo",
 		Request:     req,
-		Route:       UserInfoRoute,
+		Route:       types.NasRoute,
 	}
 	return api.Do()
 }

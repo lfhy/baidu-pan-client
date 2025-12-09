@@ -10,6 +10,15 @@ var (
 	PanBaseURL   = "https://pan.baidu.com"
 )
 
+const (
+	AuthRoute       = "/oauth/2.0/authorize"
+	TokenRoute      = "/oauth/2.0/token"
+	FileRoute       = "/rest/2.0/xpan/file"
+	MultimediaRoute = "/rest/2.0/xpan/multimedia"
+	NasRoute        = "/rest/2.0/xpan/nas"
+	QuotaRoute      = "/api/quota"
+)
+
 func getENV(key string) string {
 	switch key {
 	case "$CLIENT_ID":

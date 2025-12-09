@@ -25,7 +25,7 @@ type GetTokenRes struct {
 func GetToken(req *GetTokenReq) (*GetTokenRes, error) {
 	api := http.API[*GetTokenReq, *GetTokenRes]{
 		BaseURL:    types.AuthBaseURL,
-		Route:      TokenRoute,
+		Route:      types.TokenRoute,
 		HTTPMethod: http.GET,
 		Request:    req,
 	}

@@ -71,7 +71,7 @@ func Filemetas(req *FilemetasReq) (*FilemetasRes, error) {
 		HTTPMethod:  http.GET,
 		Method:      "filemetas",
 		Request:     req,
-		Route:       FilemetasRoute,
+		Route:       types.MultimediaRoute,
 	}
 	return api.Do()
 }
